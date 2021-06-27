@@ -1,10 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation, withRouter } from "react-router-dom";
+import {
+	useHistory,
+	useLocation,
+	withRouter,
+	useParams,
+} from "react-router-dom";
 import { useAlert } from "react-alert";
 
 function Candidate() {
 	const alert = useAlert();
+	const params = useParams();
+	console.log(params.id);
 	const history = useHistory();
 	const location = useLocation();
 	const [jobs, setJobs] = useState([]);
@@ -25,13 +32,28 @@ function Candidate() {
 				}
 			);
 			setJobs(response.data);
-
-			setDisabled(new Array(response.data.length).fill(false));
 		}
 		fetchData();
 		setLoaded(true);
 		// eslint-disable-next-line
 	}, []);
+
+	useEffect(() => {
+		async function fetchApplyData() {
+			let response = await axios.get(
+				`https://jportal-backend.herokuapp.com/applied/${params.id}`,
+				{
+					headers: {
+						Accept: "application/json",
+						Authorization:
+							window.localStorage.getItem("login_token"),
+					},
+				}
+			);
+			setDisabled(response.data.applied);
+		}
+		fetchApplyData();
+	});
 
 	const handleLogout = () => {
 		window.localStorage.removeItem("login_token");
@@ -67,11 +89,19 @@ function Candidate() {
 								disabled={disabled[index]}
 								className="btn btn-warning"
 								onClick={() => {
+									let temp = [...disabled];
+									temp[index] = true;
+									disabled = temp;
+									setDisabled(disabled);
+
 									let applied = {
 										name: candidateName,
 										jobApplied: job.jobDesc,
 										recruiterID: job.recruiterID,
+										applied: disabled[index],
 									};
+									console.log(applied);
+									console.log(index);
 									async function apply() {
 										await axios.post(
 											`https://jportal-backend.herokuapp.com/applications`,
@@ -88,10 +118,26 @@ function Candidate() {
 										);
 									}
 									apply();
-									let temp = [...disabled];
-									temp[index] = true;
-									disabled = temp;
-									setDisabled(disabled);
+									async function appliedData() {
+										await axios.post(
+											`http://localhost:3001/applied/:id`,
+											{
+												userID: params.id,
+												applied: disabled,
+											},
+											{
+												headers: {
+													Accept: "application/json",
+													Authorization:
+														window.localStorage.getItem(
+															"login_token"
+														),
+												},
+											}
+										);
+									}
+									appliedData();
+									localStorage.setItem("disabled", disabled);
 									alert.show(
 										"You have applied for this job. Please check other jobs"
 									);
