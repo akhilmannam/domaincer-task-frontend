@@ -120,7 +120,7 @@ function Candidate() {
 									apply();
 									async function appliedData() {
 										await axios.post(
-											`http://localhost:3001/applied/:id`,
+											`https://jportal-backend.herokuapp.com/:id`,
 											{
 												userID: params.id,
 												applied: disabled,
