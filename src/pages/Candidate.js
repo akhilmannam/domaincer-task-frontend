@@ -7,7 +7,6 @@ import "../App.css";
 
 function Candidate() {
 	const alert = useAlert();
-	//const params = useParams();
 	const history = useHistory();
 	const location = useLocation();
 	const [jobs, setJobs] = useState([]);
@@ -17,12 +16,16 @@ function Candidate() {
 
 	useEffect(() => {
 		async function fetchData() {
-			let response = await axios.get(`https://jportal-backend.herokuapp.com/jobs`, {
-				headers: {
-					Accept: "application/json",
-					Authorization: window.localStorage.getItem("login_token"),
-				},
-			});
+			let response = await axios.get(
+				`https://jportal-backend.herokuapp.com/jobs`,
+				{
+					headers: {
+						Accept: "application/json",
+						Authorization:
+							window.localStorage.getItem("login_token"),
+					},
+				}
+			);
 			setJobs(response.data);
 			setDisabled(new Array(response.data.length).fill(false));
 		}
@@ -30,23 +33,6 @@ function Candidate() {
 		setLoaded(true);
 		// eslint-disable-next-line
 	}, []);
-
-	// useEffect(() => {
-	// 	async function fetchApplyData() {
-	// 		let response = await axios.get(
-	// 			`https://jportal-backend.herokuapp.com/applied/${params.id}`,
-	// 			{
-	// 				headers: {
-	// 					Accept: "application/json",
-	// 					Authorization:
-	// 						window.localStorage.getItem("login_token"),
-	// 				},
-	// 			}
-	// 		);
-	// 		//setDisabled(response.data.applied);
-	// 	}
-	// 	fetchApplyData();
-	// });
 
 	const handleLogout = () => {
 		window.localStorage.removeItem("login_token");
@@ -116,31 +102,7 @@ function Candidate() {
 										alert.show(response.data.message);
 									}
 									apply();
-									// async function appliedData() {
-
-									// 	let response = await axios.post(
-									// 		`https://jportal-backend.herokuapp.com/applied/:id`,
-									// 		{
-									// 			userID: params.id,
-									// 			applied: disabled,
-									// 		},
-									// 		{
-									// 			headers: {
-									// 				Accept: "application/json",
-									// 				Authorization:
-									// 					window.localStorage.getItem(
-									// 						"login_token"
-									// 					),
-									// 			},
-									// 		}
-									// 	);
-
-									// }
-									//appliedData();
 									localStorage.setItem("disabled", disabled);
-									// alert.show(
-									// 	"You have applied for this job. Please check other jobs"
-									// );
 								}}
 							>
 								Apply
