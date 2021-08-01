@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { useAlert } from "react-alert";
+import { Button, MenuItem, Select } from "@material-ui/core";
+import "../App.css";
 
 function SignUp() {
 	const alert = useAlert();
@@ -10,21 +12,29 @@ function SignUp() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [role, setRole] = useState("0");
+	//const [errorMessage, setErrorMessage] = useState("");
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const registration = { name, email, password, role };
-		async function postRegistrationData() {
-			await axios.post(
-				"https://jportal-backend.herokuapp.com/register",
-				registration
+		//https://jportal-backend.herokuapp.com/register
+
+		let response = await axios.post(
+			"https://jportal-backend.herokuapp.com/register",
+			registration
+		);
+		console.log(response.data);
+		//setErrorMessage(response.data.message);
+		if (response.data.message === "User Registered") {
+			setName("");
+			setEmail("");
+			setPassword("");
+			alert.show(
+				"You have successfully signed up. Please proceed to login"
 			);
+		} else {
+			alert.show(response.data.message);
 		}
-		postRegistrationData();
-		setName("");
-		setEmail("");
-		setPassword("");
-		alert.show("You have successfully signed up. Please proceed to login");
 	};
 
 	return (
@@ -70,29 +80,32 @@ function SignUp() {
 						/>
 						<label className="form-label mb-2">Sign up as:</label>{" "}
 						<br />
-						<select
-							className="form-select mb-2"
-							aria-label="Default select example"
+						<Select
 							value={role}
 							onChange={(e) => setRole(e.target.value)}
 						>
-							<option value="0">Job Seeker</option>
-							<option value="1">Recruiter</option>
-						</select>
+							<MenuItem value={"0"}>Job Seeker</MenuItem>
+							<MenuItem value={"1"}>Recruiter</MenuItem>
+						</Select>
 						<br />
-						<button className="btn btn-primary mb-2" type="submit">
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+						>
 							Sign Up
-						</button>
+						</Button>
 					</form>
-					<h5 className="mb-2">Already have an account?</h5>
-					<button
-						className="btn btn-primary mb-2"
+					<h5 className="mb-3">Already have an account?</h5>
+					<Button
+						variant="contained"
+						color="primary"
 						onClick={() => {
 							history.push("/login");
 						}}
 					>
 						Login
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>

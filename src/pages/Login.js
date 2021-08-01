@@ -2,26 +2,24 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useAlert } from "react-alert";
+import { Button } from "@material-ui/core";
 
 function Login() {
 	const alert = useAlert();
 	const history = useHistory();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [message, setMessage] = useState("");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		alert.show("Logging in... Please wait");
+
 		const login = { email, password };
-		let response = await axios.post(
-			"https://jportal-backend.herokuapp.com/login",
-			login
-		);
+		let response = await axios.post("https://jportal-backend.herokuapp.com/login", login);
 		window.localStorage.setItem("login_token", response.data.token);
 		window.localStorage.setItem("role", response.data.role);
-		setMessage(response.data.message);
+        console.log(response.data);
 		if (response.data.message === "Allow" && response.data.role === "1") {
+			alert.show("Logging in... Please wait");
 			history.push({
 				pathname: `/recruiter/${response.data.id}`,
 				state: {
@@ -32,6 +30,7 @@ function Login() {
 			response.data.message === "Allow" &&
 			response.data.role === "0"
 		) {
+			alert.show("Logging in...");
 			history.push({
 				pathname: `/candidate/${response.data.id}`,
 				state: {
@@ -39,6 +38,7 @@ function Login() {
 				},
 			});
 		} else {
+			alert.show(response.data.message);
 			history.push("/login");
 		}
 		setEmail("");
@@ -74,21 +74,25 @@ function Login() {
 							type="password"
 							id="password"
 						/>
-						<button className="btn btn-primary mb-2" type="submit">
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+						>
 							Login
-						</button>
+						</Button>
 						<br />
-						<span>{message}</span>
 					</form>
-					<h5 className="mb-2">Don't have an account?</h5>
-					<button
-						className="btn btn-primary mb-2"
+					<h5 className="mb-3">Don't have an account?</h5>
+					<Button
+						variant="contained"
+						color="primary"
 						onClick={() => {
 							history.push("/signup");
 						}}
 					>
 						Sign Up
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>

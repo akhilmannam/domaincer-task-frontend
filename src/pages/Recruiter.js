@@ -7,6 +7,8 @@ import {
 	useLocation,
 } from "react-router-dom";
 import { useAlert } from "react-alert";
+import { Button } from "@material-ui/core";
+import "../App.css";
 
 function Recruiter() {
 	const alert = useAlert();
@@ -75,9 +77,13 @@ function Recruiter() {
 		<div className="container mt-2">
 			<div className="row mb-2 d-flex justify-content-around align-items-center">
 				<p className="pt-3">Welcome {recruiterName}</p>
-				<button className="btn btn-primary" onClick={handleLogout}>
+				<Button
+					variant="contained"
+					color="primary"
+					onClick={handleLogout}
+				>
 					Logout
-				</button>
+				</Button>
 			</div>
 			<div className="row mb-2">
 				<div className="offset-3 col-6">
@@ -119,9 +125,13 @@ function Recruiter() {
 							max="80"
 							step="1"
 						/>
-						<button className="btn btn-primary mb-2" type="submit">
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+						>
 							Post Job
-						</button>
+						</Button>
 					</form>
 				</div>
 			</div>

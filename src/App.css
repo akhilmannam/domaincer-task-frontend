@@ -1,1 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
 
+.MuiInputBase-root,
+.MuiButtonBase-root {
+	margin-bottom: 1rem !important;
+}
+
+p.heading {
+	font-family: "Montserrat", sans-serif;
+	font-size: large;
+}
+
+p.pt-3 {
+	font-family: "Pacifico", cursive !important;
+}
